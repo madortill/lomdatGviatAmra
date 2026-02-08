@@ -15,7 +15,7 @@ import instructions from "@/components/instructions.vue";
 export default {
   name: "basic-documents",
   components: {
-    document1,
+    document1, 
     instructions,
   },
   props: {
