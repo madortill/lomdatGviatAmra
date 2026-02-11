@@ -1014,8 +1014,8 @@ export default {
         "אוויר",
         'בח"א 10',
       ],
-      correctPersonalDetailsRow2: ["גפן 17/2, חיפה", "0587292261"],
-      correctPersonalDetailsRow3: ["396231467", "10/08/05", "09/04/2027"],
+      correctPersonalDetailsRow2: ["גפן 17, חיפה", "0587292261"],
+      correctPersonalDetailsRow3: ["396231467", "2005", "09/04/2027"],
       correctDetailsTestimony: [
         "04/12/2025",
         "10:36",
@@ -1037,7 +1037,7 @@ export default {
       correctSuspectTalk: [
         "טבחית",
         "3 חודשים",
-        "גביית האמרה הועברה למחשב בשעה 11:06",
+        "גביית האמרה הועברה לכתיבה במחשב בשעה 11:06",
       ],
       // wrong
       wrongNumbering: false,
@@ -1051,24 +1051,29 @@ export default {
     };
   },
   computed: {
-  isNextDisabled() {
-    const allFieldsFilled = [
-      ...this.personalDetailsRow1,
-      ...this.personalDetailsRow2,
-      ...this.personalDetailsRow3,
-      ...this.personalDetailsRow4,
-      ...this.suspectDetails,
-      ...this.copDetails,
-      ...this.suspectTalk,
-      ...this.suspectDetailsDown,
-      ...this.copDetailsDown
-    ].every(field => field?.value?.trim());
+    isNextDisabled() {
 
-    const allSigned = this.signatures.every(Boolean);
-    const checkboxChecked = this.checkbox1;
+// ✅ אם במצב דיבאג – הכפתור תמיד פעיל
+if (this.debugMode) return false;
 
-    return !(allFieldsFilled && allSigned && checkboxChecked);
-  }
+const allFieldsFilled = [
+  ...this.personalDetailsRow1,
+  ...this.personalDetailsRow2,
+  ...this.personalDetailsRow3,
+  ...this.personalDetailsRow4,
+  ...this.suspectDetails,
+  ...this.copDetails,
+  ...this.suspectTalk,
+  ...this.suspectDetailsDown,
+  ...this.copDetailsDown
+].every(field => field?.value?.trim());
+
+const allSigned = this.signatures.every(Boolean);
+const checkboxChecked = this.checkbox1;
+
+return !(allFieldsFilled && allSigned && checkboxChecked);
+}
+
 },
 
  
