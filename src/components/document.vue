@@ -377,46 +377,49 @@
     </foreignObject>
 
     <!-- הקבוצה שמופיעה רק אחרי סימון הצ'קבוקס -->
-    <g v-if="checkbox1" v-for="(field, index) in checkboxText" :key="index">
-      <rect
-        class="cls-2"
-        :x="field.x"
-        :y="field.y"
-        :width="field.width"
-        :height="field.height"
-      />
+    <template v-if="checkbox1">
+  <g v-for="(field, index) in checkboxText" :key="index">
+    <rect
+      class="cls-2"
+      :x="field.x"
+      :y="field.y"
+      :width="field.width"
+      :height="field.height"
+    />
 
-      <foreignObject
-        :x="field.x"
-        :y="field.y"
-        :width="field.width"
-        :height="field.height"
+    <foreignObject
+      :x="field.x"
+      :y="field.y"
+      :width="field.width"
+      :height="field.height"
+    >
+      <div
+        xmlns="http://www.w3.org/1999/xhtml"
+        style="
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
       >
-        <div
-          xmlns="http://www.w3.org/1999/xhtml"
+        <input
+          v-model="field.value"
+          :class="{ wrong: field.wrong }"
           style="
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+            text-align: center;
+            border-radius: 5px;
           "
-        >
-          <input
-            v-model="field.value"
-            :class="{ wrong: field.wrong }"
-            style="
-              width: 100%;
-              height: 100%;
-              box-sizing: border-box;
-              font-size: 0.85rem;
-              text-align: center;
-              border-radius: 5px;
-            "
-          />
-        </div>
-      </foreignObject>
-    </g>
+        />
+      </div>
+    </foreignObject>
+  </g>
+</template>
+
 
     <rect
       class="cls-2"
@@ -728,7 +731,7 @@ export default {
   name: "document",
   data() {
     return {
-      signatures: Array(6).fill(false),
+      signatures: Array(4).fill(false),
       userNumbering: "",
       userCaseNum: "",
       userNumberingCase: "",
@@ -1011,7 +1014,7 @@ export default {
         "אוויר",
         'בח"א 10',
       ],
-      correctPersonalDetailsRow2: ["גפן 17, חיפה", "0587292261"],
+      correctPersonalDetailsRow2: ["גפן 17/2, חיפה", "0587292261"],
       correctPersonalDetailsRow3: ["396231467", "10/08/05", "09/04/2027"],
       correctDetailsTestimony: [
         "04/12/2025",
@@ -1049,10 +1052,6 @@ export default {
   },
   computed: {
   isNextDisabled() {
-    // אם במצב debug הכפתור תמיד פעיל
-    if (this.debugMode) return false;
-
-    // בדיקה שכל השדות מולאו
     const allFieldsFilled = [
       ...this.personalDetailsRow1,
       ...this.personalDetailsRow2,
@@ -1063,18 +1062,16 @@ export default {
       ...this.suspectTalk,
       ...this.suspectDetailsDown,
       ...this.copDetailsDown
-    ].every(field => field.value && field.value.trim() !== "");
+    ].every(field => field?.value?.trim());
 
-    // בדיקה שכל החתימות בוצעו
-    const allSigned = this.signatures.every(sig => sig === true);
+    const allSigned = this.signatures.every(Boolean);
+    const checkboxChecked = this.checkbox1;
 
-    // בדיקה אם תיבת הסימון נלחצה
-    const checkboxChecked = this.checkbox1 === true;
-
-    // הכפתור פעיל רק אם הכל נכון
     return !(allFieldsFilled && allSigned && checkboxChecked);
   }
 },
+
+ 
   methods: {
     normalize(text) {
       if (!text) return "";
